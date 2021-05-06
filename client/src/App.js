@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import Search from './components/Search.jsx';
-import Person from './components/Person.jsx';
+import Display from './components/Display.jsx';
 
 const SW_URL = 'https://swapi.dev/api';
 
@@ -18,7 +18,6 @@ function App() {
         axios
             .get(`${SW_URL}/people/`)
             .then(res => {
-                console.log(res.data.results);
                 setPeople(res.data.results);
                 setLoading(false);
             })
@@ -29,7 +28,6 @@ function App() {
         keys: ['name', 'eye_color'],
     });
 
-    // took a lot of trial and error to find out that this returns an array of "items"
     const matches = fuse.search(query);
 
     return (
@@ -40,23 +38,12 @@ function App() {
                 placeholder="Search"
             />
 
-            {!loading && query ? (
-                <>
-                    {matches.map((match, i) => (
-                        <Person
-                            key={i}
-                            name={match.item.name}
-                            eye_color={match.item.eye_color}
-                        />
-                    ))}
-                </>
-            ) : (
-                <>
-                    {people.map((person, i) => (
-                        <Person key={i} {...person} />
-                    ))}
-                </>
-            )}
+            <Display
+                matches={matches}
+                people={people}
+                loading={loading}
+                query={query}
+            />
         </div>
     );
 }
